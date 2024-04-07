@@ -78,11 +78,12 @@ def __rename_raking_col(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def transform_raking_data(columns, rows, country: str) -> pd.DataFrame:
+def transform_raking_data(columns, rows, country: str, season: str) -> pd.DataFrame:
     df = pd.DataFrame(rows, columns=columns)
     df = __rename_raking_col(df)
     df = df.replace("", None)
     df["country"] = country
+    df["season"] = season.partition("-")[0]
 
     return df
 
@@ -139,7 +140,7 @@ def __add_match_result(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def transform_matches_data(columns, rows, country: str) -> pd.DataFrame:
+def transform_matches_data(columns, rows, country: str, season: str) -> pd.DataFrame:
     df = pd.DataFrame(rows, columns=columns)
     df["Date"] = df["Date"].apply(lambda x: __replace_empty_with_none(x))
     df["Date"] = df["Date"].ffill()
@@ -149,5 +150,6 @@ def transform_matches_data(columns, rows, country: str) -> pd.DataFrame:
     df = __add_match_result(df)
     df = df.replace("", None)
     df["country"] = country
+    df["season"] = season.partition("-")[0]
 
     return df

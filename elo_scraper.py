@@ -109,7 +109,7 @@ class EloParser:
             if "Form (last 6)" in col:
                 headers, rows = self.__get_table_by_nr(table_index=i)
                 df = processing_data.transform_raking_data(
-                    columns=headers, rows=rows, country=country
+                    columns=headers, rows=rows, country=country, season=season
                 )
                 self.sql_engine.load_data(
                     df=df, table_name="elo_raking", truncate=False
@@ -184,10 +184,10 @@ class EloParser:
                 self.page.goto(url, timeout=60000)
                 season = self.__get_season_string()
                 self.__season_hrefs_collector(country=country)
-                self.__collect_competition_data(season=season, country=country)
+                # self.__collect_competition_data(season=season, country=country)
+                self.__collect_raking_data(season=season, country=country)
+                self.__collect_matches_data(season=season, country=country)
                 print(country, season, url)
-            # self.__collect_raking_data(season=season, country=country)
-            # self.__collect_matches_data(season=season, country=country)
 
     @log.elapsed_time
     def parse(self):
