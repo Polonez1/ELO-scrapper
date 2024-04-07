@@ -139,7 +139,7 @@ class EloParser:
             if "Away" in col:
                 headers, rows = self.__get_table_by_nr(table_index=i)
                 df = processing_data.transform_matches_data(
-                    columns=headers, rows=rows, country=country
+                    columns=headers, rows=rows, country=country, season=season
                 )
                 self.sql_engine.load_data(
                     df=df, table_name="elo_matches", truncate=False
@@ -197,6 +197,9 @@ class EloParser:
             self.page = self.context.new_page()
             self.page.goto(self.url, timeout=60000)
             self.__collect_country_hrefs()
+            # self.sql_engine.sql.read_query(query=f"""DELETE FROM elo_competition where season = '{self.current_season.partition('-')[0]}'""")
+            # self.sql_engine.sql.read_query(query=f"""DELETE FROM elo_competition where season = '{self.current_season.partition('-')[0]}'""")
+            # self.sql_engine.sql.read_query(query=f"""DELETE FROM elo_competition where season = '{self.current_season.partition('-')[0]}'""")
             self.__collect_elo_data(hrefs=self.country_hrefs)
 
     @log.elapsed_time
