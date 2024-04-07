@@ -210,7 +210,6 @@ class EloParser:
             history_hrefs_dict = {}
             for href_key in self.country_hrefs:
                 for s in self.history_seasons.items():
-                    season = s[0]
                     season_param = s[1]
                     country = href_key
                     href: str = self.country_hrefs[href_key]
