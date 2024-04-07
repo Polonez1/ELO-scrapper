@@ -3,7 +3,7 @@ import pandas as pd
 
 sys.path.append("./SQL-Data-Load/")
 
-import pySQL
+import src.pysql.pySQL as pySQL
 import conn
 
 tables = ["dbo.elo_competition", "dbo.elo_raking", "dbo.elo_matches"]
@@ -43,5 +43,3 @@ class EloDataLoad:
 
 if "__main__" == __name__:
     sql = EloDataLoad()
-    df = pd.DataFrame({"id": [10, 20, 30]})
-    sql.load_data(df=df, table_name="test3", truncate=False)
