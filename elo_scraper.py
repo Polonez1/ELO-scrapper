@@ -9,7 +9,7 @@ import time
 
 
 class EloParser:
-    def __init__(self, current_season: str, history_seasons: dict):
+    def __init__(self, current_season: str):
         self.sql_engine = SQL.EloDataLoad()
 
         self.url: str = "http://elofootball.com/"
@@ -18,7 +18,11 @@ class EloParser:
         self.competition_data: dict = {}
         self.ranking_data: dict = {}
         self.matches_data: dict = {}
-        self.history_seasons: dict = history_seasons
+        self.history_seasons: dict = {
+            "2022": "2022-2023",
+            "2021": "2021-2022",
+            "2020": "2020-2021",
+        }
         self.current_season: str = current_season
         self.output_path = "./output/"
 
@@ -184,7 +188,7 @@ class EloParser:
                 self.page.goto(url, timeout=60000)
                 season = self.__get_season_string()
                 self.__season_hrefs_collector(country=country)
-                # self.__collect_competition_data(season=season, country=country)
+                self.__collect_competition_data(season=season, country=country)
                 self.__collect_raking_data(season=season, country=country)
                 self.__collect_matches_data(season=season, country=country)
                 print(country, season, url)
@@ -197,9 +201,16 @@ class EloParser:
             self.page = self.context.new_page()
             self.page.goto(self.url, timeout=60000)
             self.__collect_country_hrefs()
-            # self.sql_engine.sql.read_query(query=f"""DELETE FROM elo_competition where season = '{self.current_season.partition('-')[0]}'""")
-            # self.sql_engine.sql.read_query(query=f"""DELETE FROM elo_competition where season = '{self.current_season.partition('-')[0]}'""")
-            # self.sql_engine.sql.read_query(query=f"""DELETE FROM elo_competition where season = '{self.current_season.partition('-')[0]}'""")
+            season = self.current_season.partition("-")[0]
+            self.sql_engine.sql.read_query(
+                query=f"""DELETE FROM elo_competition where season = '{season}'"""
+            )
+            self.sql_engine.sql.read_query(
+                query=f"""DELETE FROM elo_raking where season = '{season}'"""
+            )
+            self.sql_engine.sql.read_query(
+                query=f"""DELETE FROM elo_matches where season = '{season}'"""
+            )
             self.__collect_elo_data(hrefs=self.country_hrefs)
 
     @log.elapsed_time
@@ -227,15 +238,8 @@ class EloParser:
 
 
 if "__main__" == __name__:
-    elo = EloParser(
-        current_season="2023-2024",
-        history_seasons={
-            "2022": "2022-2023",
-            "2021": "2021-2022",
-            "2020": "2020-2021",
-        },
-    )
-    elo.parse_history()
+    elo = EloParser(current_season="2023-2024")
+    elo.parse()
     # print(elo.season_hrefs)
 
 
