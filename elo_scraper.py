@@ -19,6 +19,7 @@ class EloParser:
         self.ranking_data: dict = {}
         self.matches_data: dict = {}
         self.history_seasons: dict = {
+            "2023": "2023-2024",
             "2022": "2022-2023",
             "2021": "2021-2022",
             "2020": "2020-2021",
